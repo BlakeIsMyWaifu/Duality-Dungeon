@@ -1,7 +1,7 @@
 {
   "build": {
-    "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm build",
+    "beforeDevCommand": "pnpm dev-vite",
+    "beforeBuildCommand": "pnpm build-vite",
     "devPath": "http://localhost:1420",
     "distDir": "../dist"
   },
@@ -20,7 +20,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "dev.blakeismywaifu.dualitydungeon",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -37,8 +37,9 @@
         "fullscreen": false,
         "resizable": true,
         "title": "duality-dungeon",
-        "width": 800,
-        "height": 600
+        "width": 1280,
+        "height": 720,
+        "maximized": true
       }
     ]
   }
