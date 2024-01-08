@@ -6,7 +6,7 @@ module.exports = {
 		ecmaFeatures: {
 			jsx: true
 		},
-		project: "./tsconfig.json"
+		project: './tsconfig.json'
 	},
 	env: {
 		node: true
@@ -26,6 +26,7 @@ module.exports = {
 		'plugin:react/recommended'
 	],
 	plugins: [
+		'@stylistic',
 		'@typescript-eslint',
 		'react',
 		'react-hooks',
@@ -59,6 +60,7 @@ module.exports = {
 		],
 		'react-hooks/rules-of-hooks': 'error',
 		'react-hooks/exhaustive-deps': 'warn',
-		'react/react-in-jsx-scope': 'off'
+		'react/react-in-jsx-scope': 'off',
+		'@stylistic/quotes': ['warn', 'single']
 	}
 }
