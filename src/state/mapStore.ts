@@ -3,6 +3,7 @@ import { devtools, persist } from 'zustand/middleware'
 
 import { type CombatNode, type MapNode, type NodeStatus } from '~/types/Map'
 
+import { useCombatStore } from './combatStore'
 import { createActionName, type Slice } from './stateHelpers'
 
 type MapState = {
@@ -20,7 +21,7 @@ const mapState: MapState = {
 	nodes: []
 }
 
-interface MapAction {
+type MapAction = {
 	/**
 	 * Creates the whole map for the act.
 	 * Only call at the start of a new game or start of a new act.
@@ -60,8 +61,8 @@ const mapAction: Slice<MapStore, MapAction> = (set, get) => ({
 				type: 'combat',
 				data: {
 					enemies: {
-						top: ['Pew Pew Person', 'Jedguin'],
-						bottom: ['Jedguin', 'Pew Pew Person', 'Pew Pew Person']
+						top: ['pewPewPerson', 'jedguin'],
+						bottom: ['jedguin', 'pewPewPerson', 'pewPewPerson']
 					}
 				}
 			}
@@ -111,6 +112,11 @@ const mapAction: Slice<MapStore, MapAction> = (set, get) => ({
 		}
 
 		set({ currentNode: [nodeTier, nodeId] }, ...actionName('openNode'))
+
+		const node = get().nodes[nodeTier][nodeId]
+		if (node.type === 'combat') {
+			useCombatStore.getState().initCombat(node)
+		}
 	},
 
 	completeNode: () => {

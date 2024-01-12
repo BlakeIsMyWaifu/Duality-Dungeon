@@ -1,6 +1,5 @@
-interface EnemyData {
+type EnemyData = {
 	name: string
-	image: string
 	maxHealth: number
 	startingBlock: number
 	startingStatus: Record<string, number>
@@ -19,7 +18,7 @@ interface EnemyData {
 	}
 }
 
-interface MoveData {
+type MoveData = {
 	name: string
 	weight: number
 	/** Should the move be visually shown to the player */
@@ -29,14 +28,14 @@ interface MoveData {
 
 type Target = 'player' | 'self' | 'ally' | 'all'
 
-interface MoveEffect {
+type MoveEffect = {
 	target: Target
 	damage?: number
 	block?: number
 	status?: StatusData
 }
 
-interface StatusData {
+type StatusData = {
 	type: string
 	amount: number
 }
@@ -44,9 +43,8 @@ interface StatusData {
 export type EnemyName = keyof typeof enemiesData
 
 const enemiesData = {
-	'Pew Pew Person': {
+	pewPewPerson: {
 		name: 'Pew Pew Person',
-		image: 'pewPewPerson',
 		maxHealth: 50,
 		startingBlock: 0,
 		startingStatus: {},
@@ -76,9 +74,8 @@ const enemiesData = {
 			}
 		}
 	},
-	Jedguin: {
+	jedguin: {
 		name: 'Jedguin',
-		image: 'jedguin',
 		maxHealth: 60,
 		startingBlock: 5,
 		startingStatus: {},

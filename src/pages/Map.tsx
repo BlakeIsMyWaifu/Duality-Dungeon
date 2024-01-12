@@ -1,6 +1,7 @@
 import { Box, Button, Group, Stack, Title } from '@mantine/core'
 import { Fragment, type MutableRefObject, useRef, useState } from 'react'
 import { StraightLine } from 'react-drawline'
+import { useNavigate } from 'react-router-dom'
 
 import useMountEffect from '~/hooks/useMountEffect'
 import { useMapStore } from '~/state/mapStore'
@@ -48,6 +49,8 @@ type NodeProps = {
 }
 
 function Node({ node, tier, nodeRefs }: NodeProps) {
+	const navigate = useNavigate()
+
 	const openNode = useMapStore(state => state.openNode)
 
 	return (
@@ -66,6 +69,9 @@ function Node({ node, tier, nodeRefs }: NodeProps) {
 			onClick={() => {
 				if (node.status !== 'available') return
 				openNode(+tier, node.id)
+				if (node.type === 'combat') {
+					navigate('/combat')
+				}
 			}}
 		>
 			{node.id}
@@ -89,8 +95,9 @@ function NodeLines({ node, nodeRefs }: NodeLinesProps) {
 		setForce(1)
 	})
 
-	return nodeRefs.current[0]
-		? Object.values(node.childrenId)
+	return nodeRefs.current[0] ? (
+		<>
+			{Object.values(node.childrenId)
 				.flat()
 				.map((childId, i) => (
 					<StraightLine
@@ -109,6 +116,7 @@ function NodeLines({ node, nodeRefs }: NodeLinesProps) {
 							backgroundColor: lineColours[node.status]
 						}}
 					/>
-				))
-		: null
+				))}
+		</>
+	) : null
 }

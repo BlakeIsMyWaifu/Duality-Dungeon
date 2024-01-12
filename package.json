@@ -12,8 +12,10 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
     "@mantine/core": "^7.4.0",
     "@mantine/hooks": "^7.4.0",
+    "@tabler/icons-react": "^2.45.0",
     "@tauri-apps/api": "^1.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

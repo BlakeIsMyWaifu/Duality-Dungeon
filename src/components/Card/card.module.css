@@ -1,0 +1,67 @@
+.container {
+	position: relative;
+	display: grid;
+	grid-template-columns: 25px 160px 25px;
+	grid-template-rows: 80px 120px 80px;
+	grid-template-areas:
+		'top-mood top-desc name'
+		'stamina image name'
+		'bottom-mood bottom-desc name';
+	transition: all 0.2s ease-in-out;
+}
+
+.container:hover {
+	scale: 1.2;
+	margin: 15px;
+}
+
+.effect {
+	background-color: var(--mantine-color-blueGrey-8);
+	padding: 4px;
+
+	&[data-position='top'] {
+		grid-area: top-desc;
+	}
+	&[data-position='bottom'] {
+		grid-area: bottom-desc;
+	}
+}
+
+.image {
+	grid-area: image;
+}
+
+.name {
+	grid-area: name;
+	background-color: var(--mantine-color-brown-6);
+	transform-origin: 0 0;
+	rotate: -90deg;
+	translate: 0 280px;
+	text-align: center;
+	height: 25px;
+	width: 280px;
+	line-height: 25px;
+	font-weight: bold;
+}
+
+.mood {
+	background-color: var(--mantine-color-red-9);
+	text-align: center;
+	vertical-align: middle;
+	line-height: 80px;
+
+	&[data-position='top'] {
+		grid-area: top-mood;
+	}
+	&[data-position='bottom'] {
+		grid-area: bottom-mood;
+	}
+}
+
+.stamina {
+	grid-area: stamina;
+	background-color: var(--mantine-color-brown-6);
+	text-align: center;
+	vertical-align: middle;
+	line-height: 120px;
+}

@@ -1,21 +1,21 @@
-interface CardData {
-	name: string;
-	stamina: number;
-	image: string;
-	top: HalfCardData;
-	bottom: HalfCardData;
+type CardData = {
+	name: string
+	stamina: number
+	image: string
+	top: HalfCardData
+	bottom: HalfCardData
 }
 
-interface HalfCardData {
-	mood: number;
-	description: string;
-	effect: () => void;
+type HalfCardData = {
+	mood: number
+	description: string
+	effect: () => void
 }
 
 export type CardName = keyof typeof cardsData
 
 const cardsData = {
-	'Slash': {
+	slash: {
 		name: 'Slash',
 		stamina: 1,
 		image: 'slash',
@@ -30,7 +30,7 @@ const cardsData = {
 			effect: () => undefined
 		}
 	},
-	'Block': {
+	block: {
 		name: 'Block',
 		stamina: 1,
 		image: 'block',
@@ -40,7 +40,7 @@ const cardsData = {
 			effect: () => undefined
 		},
 		bottom: {
-			mood: -8,
+			mood: -10,
 			description: 'Gain 5 Block and then do some more stuff',
 			effect: () => undefined
 		}

@@ -7,7 +7,7 @@ import { type MapNode } from '~/types/Map'
 import { useMapStore } from './mapStore'
 import { createActionName, type Slice } from './stateHelpers'
 
-interface SaveState {
+type SaveState = {
 	active: boolean
 	gameStatus: 'map' | MapNode['type']
 	deck: CardName[]
@@ -15,23 +15,23 @@ interface SaveState {
 	bottomCharacter: CharacterState
 }
 
-interface CharacterState {
+type CharacterState = {
 	readonly characterInfo: RaphaelInfo | AzraelInfo
 	health: NumberStat
 	mood: Mood
 }
 
-interface RaphaelInfo {
+type RaphaelInfo = {
 	name: 'raphael'
 	type: 'holy'
 }
 
-interface AzraelInfo {
+type AzraelInfo = {
 	name: 'azrael'
 	type: 'demonic'
 }
 
-interface NumberStat {
+type NumberStat = {
 	current: number
 	max: number
 }
@@ -43,7 +43,7 @@ interface Mood extends NumberStat {
 const saveState: SaveState = {
 	active: false,
 	gameStatus: 'map',
-	deck: ['Slash', 'Slash', 'Slash', 'Slash', 'Slash', 'Block', 'Block', 'Block', 'Block', 'Block'],
+	deck: ['slash', 'slash', 'slash', 'slash', 'slash', 'block', 'block', 'block', 'block', 'block'],
 	topCharacter: {
 		characterInfo: {
 			name: 'raphael',
@@ -76,7 +76,7 @@ const saveState: SaveState = {
 	}
 }
 
-interface SaveAction {
+type SaveAction = {
 	newGame: () => void
 }
 
