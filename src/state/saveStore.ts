@@ -10,6 +10,7 @@ import { createActionName, type Slice } from './stateHelpers'
 type SaveState = {
 	active: boolean
 	gameStatus: 'map' | MapNode['type']
+	maxStamina: number
 	deck: CardName[]
 	topCharacter: CharacterState
 	bottomCharacter: CharacterState
@@ -43,6 +44,7 @@ interface Mood extends NumberStat {
 const saveState: SaveState = {
 	active: false,
 	gameStatus: 'map',
+	maxStamina: 5,
 	deck: ['slash', 'slash', 'slash', 'slash', 'slash', 'block', 'block', 'block', 'block', 'block'],
 	topCharacter: {
 		characterInfo: {

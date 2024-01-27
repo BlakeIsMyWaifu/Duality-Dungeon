@@ -10,6 +10,7 @@ import { createActionName, type Slice } from './stateHelpers'
 
 type CombatState = {
 	round: number
+	isPlayerActive: boolean
 	stamina: number
 	cards: {
 		hand: CardName[]
@@ -32,6 +33,7 @@ type EnemyCombat = {
 
 const combatState: CombatState = {
 	round: 0,
+	isPlayerActive: true,
 	stamina: 5,
 	cards: {
 		hand: [],
@@ -52,9 +54,13 @@ type CombatAction = {
 	drawCard: (amount?: number) => void
 	reloadDeck: () => void
 	discardCard: (handId: number) => void
+	discardHand: () => void
 	activateCard: (handId: number) => void
-	/** Do NOT check if the player has enough stamina */
+	/** Does NOT check if the player has enough stamina */
 	consumeStamina: (amount: number) => void
+	endTurn: () => void
+	startTurn: () => void
+	enemyTurn: () => void
 }
 
 const actionName = createActionName<keyof CombatAction>('combat')
@@ -164,14 +170,30 @@ const combatAction: Slice<CombatStore, CombatAction> = (set, get) => ({
 		const hand = structuredClone(get().cards.hand)
 		hand.splice(handId, 1)
 
+		const discardedCard = get().cards.hand[handId]
+
 		set(
 			state => ({
 				cards: {
 					...state.cards,
 					hand,
+					discard: [...state.cards.discard, discardedCard]
 				}
 			}),
 			...actionName('discardCard')
+		)
+	},
+
+	discardHand: () => {
+		set(
+			state => ({
+				cards: {
+					...state.cards,
+					discard: [...state.cards.discard, ...state.cards.hand],
+					hand: []
+				}
+			}),
+			...actionName('discardHand')
 		)
 	},
 
@@ -189,6 +211,8 @@ const combatAction: Slice<CombatStore, CombatAction> = (set, get) => ({
 
 		get().discardCard(handId)
 		get().consumeStamina(staminaCost)
+
+		set({}, ...actionName('activateCard'))
 	},
 
 	consumeStamina: amount => {
@@ -198,6 +222,26 @@ const combatAction: Slice<CombatStore, CombatAction> = (set, get) => ({
 			}),
 			...actionName('consumeStamina')
 		)
+	},
+
+	endTurn: () => {
+		set({ isPlayerActive: false }, ...actionName('endTurn'))
+
+		get().discardHand()
+		get().enemyTurn()
+		get().startTurn()
+	},
+
+	startTurn: () => {
+		const { maxStamina } = useSaveStore.getState()
+
+		set({ isPlayerActive: true, stamina: maxStamina })
+
+		get().drawCard(5)
+	},
+
+	enemyTurn: () => {
+		set({}, ...actionName('enemyTurn'))
 	}
 })
 

@@ -1,7 +1,8 @@
 import { DndContext, type DragEndEvent } from '@dnd-kit/core'
 import { restrictToWindowEdges } from '@dnd-kit/modifiers'
-import { Box } from '@mantine/core'
+import { Box, Stack } from '@mantine/core'
 
+import EndTurn from '~/components/combat/EndTurn'
 import Hand from '~/components/combat/Hand'
 import Lane from '~/components/combat/Lane'
 import Piles from '~/components/combat/Piles'
@@ -18,7 +19,7 @@ export default function Combat() {
 					display: 'grid',
 					gridTemplateAreas: `
 						"top top top"
-						"stamina hand piles"
+						"turnStatus hand piles"
 						"bottom bottom bottom"
 					`,
 					gridTemplateColumns: '160px 1fr 240px',
@@ -33,7 +34,16 @@ export default function Combat() {
 			>
 				<Lane position='top' />
 				<Lane position='bottom' />
-				<Stamina />
+
+				<Stack
+					style={{
+						gridArea: 'turnStatus'
+					}}
+				>
+					<Stamina />
+					<EndTurn />
+				</Stack>
+
 				<Hand />
 				<Piles />
 			</Box>
