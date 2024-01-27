@@ -38,7 +38,9 @@ function Pile({ label }: PileProps) {
 	const [opened, { open, close }] = useDisclosure(false)
 
 	const cards = useCombatStore(state => state.cards)
-	cards.deck.sort()
+	/* This is the easiest way to sort the deck without mutating the zustand state */
+	const cardsClone = structuredClone(cards)
+	cardsClone.deck.sort()
 
 	return (
 		<>
@@ -53,7 +55,7 @@ function Pile({ label }: PileProps) {
 					blur: 3
 				}}
 			>
-				{cards[label].map((card, i) => (
+				{cardsClone[label].map((card, i) => (
 					<Text key={i}>{card}</Text>
 				))}
 			</Modal>

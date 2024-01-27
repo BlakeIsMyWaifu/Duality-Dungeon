@@ -1,14 +1,18 @@
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, type DragEndEvent } from '@dnd-kit/core'
+import { restrictToWindowEdges } from '@dnd-kit/modifiers'
 import { Box } from '@mantine/core'
 
 import Hand from '~/components/combat/Hand'
 import Lane from '~/components/combat/Lane'
 import Piles from '~/components/combat/Piles'
 import Stamina from '~/components/combat/Stamina'
+import { useCombatStore } from '~/state/combatStore'
 
 export default function Combat() {
+	const dndSettings = useDndSettings()
+
 	return (
-		<DndContext>
+		<DndContext {...dndSettings}>
 			<Box
 				style={{
 					display: 'grid',
@@ -35,4 +39,20 @@ export default function Combat() {
 			</Box>
 		</DndContext>
 	)
+}
+
+function useDndSettings() {
+	const activateCard = useCombatStore(state => state.activateCard)
+
+	const handleDragEnd = (event: DragEndEvent) => {
+		if (!event.over) return
+		const [type, id] = event.active.id.toString().split('-')
+		if (type !== 'handCard') return
+		activateCard(+id)
+	}
+
+	return {
+		onDragEnd: handleDragEnd,
+		modifiers: [restrictToWindowEdges]
+	} satisfies Parameters<typeof DndContext>[0]
 }

@@ -1,4 +1,4 @@
-type CardData = {
+export type CardData = {
 	name: string
 	stamina: number
 	image: string
@@ -14,6 +14,10 @@ type HalfCardData = {
 
 export type CardName = keyof typeof cardsData
 
+const MISSING_EFFECT = (cardName: string, position: 'top' | 'bottom') => () =>
+	console.log(`${cardName}-${position} has a missing effect`)
+
+// TODO convert to a set
 const cardsData = {
 	slash: {
 		name: 'Slash',
@@ -22,12 +26,12 @@ const cardsData = {
 		top: {
 			mood: 10,
 			description: 'Deal 6 Damage',
-			effect: () => undefined
+			effect: MISSING_EFFECT('slash', 'top')
 		},
 		bottom: {
 			mood: 15,
 			description: 'Deal 6 Damage',
-			effect: () => undefined
+			effect: MISSING_EFFECT('slash', 'bottom')
 		}
 	},
 	block: {
@@ -37,12 +41,12 @@ const cardsData = {
 		top: {
 			mood: -5,
 			description: 'Gain 5 Block',
-			effect: () => undefined
+			effect: MISSING_EFFECT('block', 'top')
 		},
 		bottom: {
 			mood: -10,
 			description: 'Gain 5 Block and then do some more stuff',
-			effect: () => undefined
+			effect: MISSING_EFFECT('block', 'bottom')
 		}
 	}
 } satisfies Record<string, CardData>

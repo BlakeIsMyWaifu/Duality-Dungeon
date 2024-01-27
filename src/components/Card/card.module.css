@@ -7,7 +7,7 @@
 		'top-mood top-desc name'
 		'stamina image name'
 		'bottom-mood bottom-desc name';
-	transition: all 0.2s ease-in-out;
+	transition: scale 0.2s ease-in-out;
 }
 
 .container:hover {

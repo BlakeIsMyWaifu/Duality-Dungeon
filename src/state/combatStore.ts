@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
-import { type CardName } from '~/data/cards'
+import cardsData, { type CardName } from '~/data/cards'
 import enemiesData, { type EnemyName } from '~/data/enemies'
 import { type CombatNode } from '~/types/Map'
 
@@ -51,6 +51,10 @@ type CombatAction = {
 	addEnemy: (lane: 'top' | 'bottom', enemyName: EnemyName) => void
 	drawCard: (amount?: number) => void
 	reloadDeck: () => void
+	discardCard: (handId: number) => void
+	activateCard: (handId: number) => void
+	/** Do NOT check if the player has enough stamina */
+	consumeStamina: (amount: number) => void
 }
 
 const actionName = createActionName<keyof CombatAction>('combat')
@@ -153,6 +157,46 @@ const combatAction: Slice<CombatStore, CombatAction> = (set, get) => ({
 				}
 			}),
 			...actionName('reloadDeck')
+		)
+	},
+
+	discardCard: handId => {
+		const hand = structuredClone(get().cards.hand)
+		hand.splice(handId, 1)
+
+		set(
+			state => ({
+				cards: {
+					...state.cards,
+					hand,
+				}
+			}),
+			...actionName('discardCard')
+		)
+	},
+
+	activateCard: handId => {
+		const { hand } = get().cards
+		const cardName = hand[handId]
+		const card = cardsData[cardName]
+
+		const staminaCost = card.stamina
+		const currentStamina = get().stamina
+		if (currentStamina < staminaCost) return
+
+		card.top.effect()
+		card.bottom.effect()
+
+		get().discardCard(handId)
+		get().consumeStamina(staminaCost)
+	},
+
+	consumeStamina: amount => {
+		set(
+			state => ({
+				stamina: state.stamina - amount
+			}),
+			...actionName('consumeStamina')
 		)
 	}
 })
