@@ -1,7 +1,7 @@
 type EnemyData = {
 	name: string
 	maxHealth: number
-	startingBlock: number
+	startingShield: number
 	startingStatus: Record<string, number>
 	actions: {
 		pattern: {
@@ -46,7 +46,7 @@ const enemiesData = {
 	pewPewPerson: {
 		name: 'Pew Pew Person',
 		maxHealth: 50,
-		startingBlock: 0,
+		startingShield: 0,
 		startingStatus: {},
 		actions: {
 			pattern: {
@@ -77,7 +77,7 @@ const enemiesData = {
 	jedguin: {
 		name: 'Jedguin',
 		maxHealth: 60,
-		startingBlock: 5,
+		startingShield: 5,
 		startingStatus: {},
 		actions: {
 			pattern: {},

@@ -1,10 +1,15 @@
 import { useDroppable } from '@dnd-kit/core'
-import { Box, Group, Image } from '@mantine/core'
+import { Box, Group, Image, Stack } from '@mantine/core'
 
-import { useCombatStore } from '~/state/combatStore'
+import enemiesData from '~/data/enemies'
+import { type EnemyCombat, useCombatStore } from '~/state/combatStore'
+import { useSaveStore } from '~/state/saveStore'
+import { type Lane } from '~/types/Combat'
+
+import HealthBar from './HealthBar'
 
 type LaneProps = {
-	position: 'top' | 'bottom'
+	position: Lane
 }
 
 export default function Lane({ position }: LaneProps) {
@@ -19,19 +24,11 @@ export default function Lane({ position }: LaneProps) {
 				position: 'relative'
 			}}
 		>
-			<Image src={position === 'top' ? '/players/raphael.webp' : '/players/azrael.webp'} h={280} w={280} />
+			<Character position={position} />
 
-			<Group gap={0}>
+			<Group gap='xs'>
 				{enemies.map((enemy, i) => (
-					<Image
-						key={i}
-						src={`/enemies/${enemy.name}.webp`}
-						h={200}
-						w={200}
-						style={{
-							transform: 'scaleX(-1)'
-						}}
-					/>
+					<Enemy key={i} enemyData={enemy} />
 				))}
 			</Group>
 
@@ -41,7 +38,7 @@ export default function Lane({ position }: LaneProps) {
 }
 
 type DropzoneProps = {
-	position: 'top' | 'bottom'
+	position: Lane
 }
 
 function Dropzone({ position }: DropzoneProps) {
@@ -60,5 +57,43 @@ function Dropzone({ position }: DropzoneProps) {
 				bottom: position === 'bottom' ? 0 : undefined
 			}}
 		/>
+	)
+}
+
+type CharacterProps = {
+	position: Lane
+}
+
+function Character({ position }: CharacterProps) {
+	const health = useSaveStore(state => state.characters[position].health)
+	const shield = useCombatStore(state => state.characters[position].shield)
+
+	return (
+		<Stack>
+			<Image src={position === 'top' ? '/players/raphael.webp' : '/players/azrael.webp'} h={280} w={280} />
+			<HealthBar currentHealth={health.current} maxHealth={health.max} shield={shield} />
+		</Stack>
+	)
+}
+
+type EnemyProps = {
+	enemyData: EnemyCombat
+}
+
+function Enemy({ enemyData }: EnemyProps) {
+	const { maxHealth } = enemiesData[enemyData.name]
+
+	return (
+		<Stack>
+			<Image
+				src={`/enemies/${enemyData.name}.webp`}
+				h={200}
+				w={200}
+				style={{
+					transform: 'scaleX(-1)'
+				}}
+			/>
+			<HealthBar currentHealth={enemyData.currentHealth} maxHealth={maxHealth} shield={enemyData.shield} />
+		</Stack>
 	)
 }

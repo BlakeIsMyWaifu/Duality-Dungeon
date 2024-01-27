@@ -12,8 +12,10 @@ type SaveState = {
 	gameStatus: 'map' | MapNode['type']
 	maxStamina: number
 	deck: CardName[]
-	topCharacter: CharacterState
-	bottomCharacter: CharacterState
+	characters: {
+		top: CharacterState
+		bottom: CharacterState
+	}
 }
 
 type CharacterState = {
@@ -46,34 +48,36 @@ const saveState: SaveState = {
 	gameStatus: 'map',
 	maxStamina: 5,
 	deck: ['slash', 'slash', 'slash', 'slash', 'slash', 'block', 'block', 'block', 'block', 'block'],
-	topCharacter: {
-		characterInfo: {
-			name: 'raphael',
-			type: 'holy'
+	characters: {
+		top: {
+			characterInfo: {
+				name: 'raphael',
+				type: 'holy'
+			},
+			health: {
+				current: 50,
+				max: 50
+			},
+			mood: {
+				current: 10,
+				max: 100,
+				thresholds: [60, 80]
+			}
 		},
-		health: {
-			current: 50,
-			max: 50
-		},
-		mood: {
-			current: 10,
-			max: 100,
-			thresholds: [60, 80]
-		}
-	},
-	bottomCharacter: {
-		characterInfo: {
-			name: 'azrael',
-			type: 'demonic'
-		},
-		health: {
-			current: 75,
-			max: 75
-		},
-		mood: {
-			current: 10,
-			max: 100,
-			thresholds: [60, 80]
+		bottom: {
+			characterInfo: {
+				name: 'azrael',
+				type: 'demonic'
+			},
+			health: {
+				current: 75,
+				max: 75
+			},
+			mood: {
+				current: 10,
+				max: 100,
+				thresholds: [60, 80]
+			}
 		}
 	}
 }

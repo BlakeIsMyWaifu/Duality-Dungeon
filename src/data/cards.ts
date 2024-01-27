@@ -1,3 +1,7 @@
+import { type Lane } from '~/types/Combat'
+import { damageFront } from '~/utils/combatHelpers/damageEnemy'
+import { shieldCharacter } from '~/utils/combatHelpers/shield'
+
 export type CardData = {
 	name: string
 	stamina: number
@@ -14,8 +18,8 @@ type HalfCardData = {
 
 export type CardName = keyof typeof cardsData
 
-const MISSING_EFFECT = (cardName: string, position: 'top' | 'bottom') => () =>
-	console.log(`${cardName}-${position} has a missing effect`)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const MISSING_EFFECT = (cardName: string, lane: Lane) => () => console.log(`${cardName}-${lane} has a missing effect`)
 
 // TODO convert to a set
 const cardsData = {
@@ -26,12 +30,12 @@ const cardsData = {
 		top: {
 			mood: 10,
 			description: 'Deal 6 Damage',
-			effect: MISSING_EFFECT('slash', 'top')
+			effect: () => damageFront('top', 6)
 		},
 		bottom: {
 			mood: 15,
 			description: 'Deal 6 Damage',
-			effect: MISSING_EFFECT('slash', 'bottom')
+			effect: () => damageFront('bottom', 6)
 		}
 	},
 	block: {
@@ -41,12 +45,12 @@ const cardsData = {
 		top: {
 			mood: -5,
 			description: 'Gain 5 Block',
-			effect: MISSING_EFFECT('block', 'top')
+			effect: () => shieldCharacter('top', 5)
 		},
 		bottom: {
 			mood: -10,
-			description: 'Gain 5 Block and then do some more stuff',
-			effect: MISSING_EFFECT('block', 'bottom')
+			description: 'Gain 8 Block',
+			effect: () => shieldCharacter('bottom', 8)
 		}
 	}
 } satisfies Record<string, CardData>

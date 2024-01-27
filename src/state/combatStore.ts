@@ -3,6 +3,7 @@ import { devtools, persist } from 'zustand/middleware'
 
 import cardsData, { type CardName } from '~/data/cards'
 import enemiesData, { type EnemyName } from '~/data/enemies'
+import { type Lane } from '~/types/Combat'
 import { type CombatNode } from '~/types/Map'
 
 import { useSaveStore } from './saveStore'
@@ -12,6 +13,10 @@ type CombatState = {
 	round: number
 	isPlayerActive: boolean
 	stamina: number
+	characters: {
+		top: CharacterCombat
+		bottom: CharacterCombat
+	}
 	cards: {
 		hand: CardName[]
 		deck: CardName[]
@@ -24,10 +29,14 @@ type CombatState = {
 	}
 }
 
-type EnemyCombat = {
+type CharacterCombat = {
+	shield: number
+}
+
+export type EnemyCombat = {
 	name: EnemyName
 	currentHealth: number
-	currentBlock: number
+	shield: number
 	status: Record<string, number>
 }
 
@@ -35,6 +44,14 @@ const combatState: CombatState = {
 	round: 0,
 	isPlayerActive: true,
 	stamina: 5,
+	characters: {
+		top: {
+			shield: 0
+		},
+		bottom: {
+			shield: 0
+		}
+	},
 	cards: {
 		hand: [],
 		deck: [],
@@ -50,7 +67,8 @@ const combatState: CombatState = {
 type CombatAction = {
 	/** Should only be called from useMapStore.openNode */
 	initCombat: (combatNode: CombatNode) => void
-	addEnemy: (lane: 'top' | 'bottom', enemyName: EnemyName) => void
+	addEnemy: (lane: Lane, enemyName: EnemyName) => void
+	removeEnemy: (lane: Lane, index: number) => void
 	drawCard: (amount?: number) => void
 	reloadDeck: () => void
 	discardCard: (handId: number) => void
@@ -61,6 +79,8 @@ type CombatAction = {
 	endTurn: () => void
 	startTurn: () => void
 	enemyTurn: () => void
+	updateEnemy: (lane: Lane, index: number, data: Partial<EnemyCombat>) => void
+	updateCharacter: (lane: Lane, data: Partial<CharacterCombat>) => void
 }
 
 const actionName = createActionName<keyof CombatAction>('combat')
@@ -77,20 +97,13 @@ const combatAction: Slice<CombatStore, CombatAction> = (set, get) => ({
 		}
 
 		set(
-			{
-				round: 0,
-				stamina: 5,
+			state => ({
+				...combatState,
 				cards: {
-					hand: [],
-					deck,
-					discard: [],
-					banish: []
-				},
-				enemies: {
-					top: [],
-					bottom: []
+					...state.cards,
+					deck
 				}
-			},
+			}),
 			...actionName('initCombat')
 		)
 
@@ -115,13 +128,28 @@ const combatAction: Slice<CombatStore, CombatAction> = (set, get) => ({
 						{
 							name: enemyName,
 							currentHealth: enemyData.maxHealth,
-							currentBlock: enemyData.startingBlock,
+							shield: enemyData.startingShield,
 							status: enemyData.startingStatus
 						}
 					]
 				}
 			}),
 			...actionName('addEnemy')
+		)
+	},
+
+	removeEnemy: (lane, index) => {
+		const updatedLane = structuredClone(get().enemies[lane])
+		updatedLane.splice(index, 1)
+
+		set(
+			state => ({
+				enemies: {
+					...state.enemies,
+					[lane]: updatedLane
+				}
+			}),
+			...actionName('removeEnemy')
 		)
 	},
 
@@ -242,6 +270,38 @@ const combatAction: Slice<CombatStore, CombatAction> = (set, get) => ({
 
 	enemyTurn: () => {
 		set({}, ...actionName('enemyTurn'))
+	},
+
+	updateEnemy: (lane, index, data) => {
+		const laneEnemies = structuredClone(get().enemies[lane])
+		laneEnemies[index] = { ...laneEnemies[index], ...data }
+
+		set(
+			state => ({
+				enemies: {
+					...state.enemies,
+					[lane]: laneEnemies
+				}
+			}),
+			...actionName('updateEnemy')
+		)
+
+		const enemy = get().enemies[lane][index]
+		if (enemy.currentHealth <= 0) {
+			get().removeEnemy(lane, index)
+		}
+	},
+
+	updateCharacter: (lane, data) => {
+		set(
+			state => ({
+				characters: {
+					...state.characters,
+					[lane]: { ...state.characters[lane], ...data }
+				}
+			}),
+			...actionName('updateCharacter')
+		)
 	}
 })
 
