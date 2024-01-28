@@ -82,13 +82,13 @@ const saveState: SaveState = {
 	}
 }
 
-type SaveAction = {
+type SaveActions = {
 	newGame: () => void
 }
 
 const actionName = createActionName('save')
 
-const saveAction: Slice<SaveStore, SaveAction> = (set, _get) => ({
+const saveActions: Slice<SaveStore, SaveActions> = (set, _get) => ({
 	newGame: () => {
 		set(
 			{
@@ -102,14 +102,14 @@ const saveAction: Slice<SaveStore, SaveAction> = (set, _get) => ({
 	}
 })
 
-type SaveStore = SaveState & SaveAction
+type SaveStore = SaveState & SaveActions
 
 export const useSaveStore = create<SaveStore>()(
 	persist(
 		devtools(
 			(...a) => ({
 				...saveState,
-				...saveAction(...a)
+				...saveActions(...a)
 			}),
 			{
 				// Devtools settings

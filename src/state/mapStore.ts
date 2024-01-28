@@ -21,7 +21,7 @@ const mapState: MapState = {
 	nodes: []
 }
 
-type MapAction = {
+type MapActions = {
 	/**
 	 * Creates the whole map for the act.
 	 * Only call at the start of a new game or start of a new act.
@@ -48,9 +48,9 @@ type MapAction = {
 	changeNodeStatus: (nodeTier: number, nodeId: number, status: NodeStatus) => void
 }
 
-const actionName = createActionName<keyof MapAction>('map')
+const actionName = createActionName<keyof MapActions>('map')
 
-const mapAction: Slice<MapStore, MapAction> = (set, get) => ({
+const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 	generateNodes: () => {
 		const combatNode = (id: number, tier: number, childrenId: Record<number, number[]>) => {
 			const out: CombatNode = {
@@ -160,14 +160,14 @@ const mapAction: Slice<MapStore, MapAction> = (set, get) => ({
 	}
 })
 
-type MapStore = MapState & MapAction
+type MapStore = MapState & MapActions
 
 export const useMapStore = create<MapStore>()(
 	persist(
 		devtools(
 			(...a) => ({
 				...mapState,
-				...mapAction(...a)
+				...mapActions(...a)
 			}),
 			{
 				// Devtools settings
