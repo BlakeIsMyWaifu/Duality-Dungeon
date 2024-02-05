@@ -5,7 +5,8 @@ import { type CardName } from '~/data/cards'
 import { type EnemyName } from '~/data/enemies'
 
 import { type CardActions, cardActions } from './cardActions'
-import { type LaneActions, laneActions } from './LaneActions'
+import { type CharacterActions, characterActions } from './characterActions'
+import { type EnemyActions, enemyActions } from './enemyActions'
 import { type TurnActions, turnActions } from './turnActions'
 
 type CombatState = {
@@ -37,6 +38,7 @@ export type EnemyCombat = {
 	currentHealth: number
 	shield: number
 	status: Record<string, number>
+	moves: string[]
 }
 
 export const combatState: CombatState = {
@@ -63,7 +65,7 @@ export const combatState: CombatState = {
 	}
 }
 
-type CombatActions = TurnActions & CardActions & LaneActions
+type CombatActions = CardActions & CharacterActions & EnemyActions & TurnActions
 
 export type CombatStore = CombatState & CombatActions
 
@@ -72,9 +74,10 @@ export const useCombatStore = create<CombatStore>()(
 		devtools(
 			(...a) => ({
 				...combatState,
-				...turnActions(...a),
 				...cardActions(...a),
-				...laneActions(...a)
+				...characterActions(...a),
+				...enemyActions(...a),
+				...turnActions(...a)
 			}),
 			{
 				// Devtools settings

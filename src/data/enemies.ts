@@ -1,5 +1,7 @@
-type EnemyData = {
+export type EnemyData = {
 	name: string
+	/** Must match the key */
+	displayName: string
 	maxHealth: number
 	startingShield: number
 	startingStatus: Record<string, number>
@@ -20,31 +22,24 @@ type EnemyData = {
 
 type MoveData = {
 	name: string
+	/** Must match the key */
+	displayName: string
 	weight: number
 	/** Should the move be visually shown to the player */
 	hidden?: boolean
-	effects: MoveEffect[]
-}
-
-type Target = 'player' | 'self' | 'ally' | 'all'
-
-type MoveEffect = {
-	target: Target
-	damage?: number
-	block?: number
-	status?: StatusData
-}
-
-type StatusData = {
-	type: string
-	amount: number
+	effect: () => void
 }
 
 export type EnemyName = keyof typeof enemiesData
 
-const enemiesData = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const MISSING_EFFECT = (enemyName: EnemyName, move: string) => () =>
+	console.log(`${enemyName}-${move} has a missing effect`)
+
+const enemiesData: Record<string, EnemyData> = {
 	pewPewPerson: {
-		name: 'Pew Pew Person',
+		name: 'pewPewPerson',
+		displayName: 'Pew Pew Person',
 		maxHealth: 50,
 		startingShield: 0,
 		startingStatus: {},
@@ -57,25 +52,23 @@ const enemiesData = {
 			},
 			movePool: {
 				shoot: {
-					name: 'Shoot',
+					name: 'shoot',
+					displayName: 'Shoot',
 					weight: 1,
-					effects: [
-						{
-							target: 'player',
-							damage: 6
-						}
-					]
+					effect: MISSING_EFFECT('pewPewPerson', 'shoot')
 				},
 				reload: {
-					name: 'Reload',
+					name: 'reload',
+					displayName: 'Reload',
 					weight: 1,
-					effects: []
+					effect: MISSING_EFFECT('pewPewPerson', 'reload')
 				}
 			}
 		}
 	},
 	jedguin: {
-		name: 'Jedguin',
+		name: 'jedguin',
+		displayName: 'Jedguin',
 		maxHealth: 60,
 		startingShield: 5,
 		startingStatus: {},
@@ -83,28 +76,20 @@ const enemiesData = {
 			pattern: {},
 			movePool: {
 				vroom: {
-					name: 'VROOM',
+					name: 'vroom',
+					displayName: 'VROOM',
 					weight: 2,
-					effects: [
-						{
-							target: 'player',
-							damage: 4
-						}
-					]
+					effect: MISSING_EFFECT('jedguin', 'vroom')
 				},
 				block: {
-					name: 'Block',
+					name: 'block',
+					displayName: 'Block',
 					weight: 1,
-					effects: [
-						{
-							target: 'self',
-							block: 4
-						}
-					]
+					effect: MISSING_EFFECT('jedguin', 'block')
 				}
 			}
 		}
 	}
-} satisfies Record<string, EnemyData>
+}
 
 export default enemiesData

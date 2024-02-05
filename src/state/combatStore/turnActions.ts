@@ -1,8 +1,7 @@
+import { combatState, type CombatStore } from '~/state/combatStore'
 import { useSaveStore } from '~/state/saveStore'
 import { createActionName, type Slice } from '~/state/stateHelpers'
 import { type CombatNode } from '~/types/Map'
-
-import { combatState, type CombatStore } from './combatStore'
 
 export type TurnActions = {
 	/** Should only be called from useMapStore.openNode */
@@ -61,7 +60,11 @@ export const turnActions: Slice<CombatStore, TurnActions> = (set, get) => ({
 		get().drawCard(5)
 	},
 
+	// prettier-ignore
 	enemyTurn: () => {
+		get().enemies.top.forEach((_, i) => get().enemyUseMove('top', i))
+		get().enemies.bottom.forEach((_, i) => get().enemyUseMove('bottom', i))
+
 		set({}, ...actionName('enemyTurn'))
 	}
 })

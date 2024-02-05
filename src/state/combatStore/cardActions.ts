@@ -1,7 +1,6 @@
 import cardsData from '~/data/cards'
-
-import { createActionName, type Slice } from '../stateHelpers'
-import { type CombatStore } from './combatStore'
+import { type CombatStore } from '~/state/combatStore'
+import { createActionName, type Slice } from '~/state/stateHelpers'
 
 export type CardActions = {
 	drawCard: (amount?: number) => void
@@ -9,8 +8,6 @@ export type CardActions = {
 	discardCard: (handId: number) => void
 	discardHand: () => void
 	activateCard: (handId: number) => void
-	/** Does NOT check if the player has enough stamina */
-	consumeStamina: (amount: number) => void
 }
 
 const actionName = createActionName<keyof CardActions>('combat')
@@ -104,14 +101,5 @@ export const cardActions: Slice<CombatStore, CardActions> = (set, get) => ({
 		get().consumeStamina(staminaCost)
 
 		set({}, ...actionName('activateCard'))
-	},
-
-	consumeStamina: amount => {
-		set(
-			state => ({
-				stamina: state.stamina - amount
-			}),
-			...actionName('consumeStamina')
-		)
 	}
 })
