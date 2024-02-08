@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 import { type CardName } from '~/data/cards'
+import { type Lane } from '~/types/Combat'
 import { type MapNode } from '~/types/Map'
 
 import { useMapStore } from './mapStore'
@@ -84,9 +85,10 @@ const saveState: SaveState = {
 
 type SaveActions = {
 	newGame: () => void
+	updateCharacterHealth: (lane: Lane, amount: number) => void
 }
 
-const actionName = createActionName('save')
+const actionName = createActionName<keyof SaveActions>('save')
 
 const saveActions: Slice<SaveStore, SaveActions> = (set, _get) => ({
 	newGame: () => {
@@ -99,6 +101,24 @@ const saveActions: Slice<SaveStore, SaveActions> = (set, _get) => ({
 		)
 
 		useMapStore.getState().generateNodes()
+	},
+
+	updateCharacterHealth: (lane, amount) => {
+		set(
+			state => ({
+				characters: {
+					...state.characters,
+					[lane]: {
+						...state.characters[lane],
+						health: {
+							...state.characters[lane].health,
+							current: amount
+						}
+					}
+				}
+			}),
+			...actionName('updateCharacterHealth')
+		)
 	}
 })
 

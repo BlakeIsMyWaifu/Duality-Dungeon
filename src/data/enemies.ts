@@ -1,3 +1,7 @@
+import { type Lane } from '~/types/Combat'
+import { damageCharacter } from '~/utils/combatHelpers/damageCharacter'
+import { shieldEnemy } from '~/utils/combatHelpers/shield'
+
 export type EnemyData = {
 	name: string
 	/** Must match the key */
@@ -27,7 +31,7 @@ type MoveData = {
 	weight: number
 	/** Should the move be visually shown to the player */
 	hidden?: boolean
-	effect: () => void
+	effect: (lane: Lane, index: number) => void
 }
 
 export type EnemyName = keyof typeof enemiesData
@@ -55,13 +59,13 @@ const enemiesData: Record<string, EnemyData> = {
 					name: 'shoot',
 					displayName: 'Shoot',
 					weight: 1,
-					effect: MISSING_EFFECT('pewPewPerson', 'shoot')
+					effect: lane => damageCharacter(lane, 4)
 				},
 				reload: {
 					name: 'reload',
 					displayName: 'Reload',
 					weight: 1,
-					effect: MISSING_EFFECT('pewPewPerson', 'reload')
+					effect: () => undefined
 				}
 			}
 		}
@@ -79,13 +83,13 @@ const enemiesData: Record<string, EnemyData> = {
 					name: 'vroom',
 					displayName: 'VROOM',
 					weight: 2,
-					effect: MISSING_EFFECT('jedguin', 'vroom')
+					effect: lane => damageCharacter(lane, 2)
 				},
 				block: {
 					name: 'block',
 					displayName: 'Block',
 					weight: 1,
-					effect: MISSING_EFFECT('jedguin', 'block')
+					effect: (lane, index) => shieldEnemy(lane, index, 3)
 				}
 			}
 		}

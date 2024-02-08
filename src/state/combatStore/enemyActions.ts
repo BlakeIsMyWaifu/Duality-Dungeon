@@ -87,7 +87,7 @@ export const enemyActions: Slice<CombatStore, EnemyActions> = (set, get) => ({
 		const enemyCombatData = get().enemies[lane][index]
 		const [nextMove, ...otherMoves] = enemyCombatData.moves
 		const enemyData = enemiesData[enemyCombatData.name]
-		enemyData.actions.movePool[nextMove].effect()
+		enemyData.actions.movePool[nextMove].effect(lane, index)
 
 		if (otherMoves.length) {
 			get().updateEnemy(lane, index, { moves: otherMoves })
