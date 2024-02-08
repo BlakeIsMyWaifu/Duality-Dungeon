@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core'
 import { Box, Group, Image, Stack } from '@mantine/core'
 
-import enemiesData from '~/data/enemies'
+import { getEnemyData } from '~/data/enemies'
 import { type EnemyCombat, useCombatStore } from '~/state/combatStore'
 import { useSaveStore } from '~/state/saveStore'
 import { type Lane } from '~/types/Combat'
@@ -28,7 +28,7 @@ export default function Lane({ position }: LaneProps) {
 
 			<Group gap='xs'>
 				{enemies.map((enemy, i) => (
-					<Enemy key={i} enemyData={enemy} />
+					<Enemy key={i} enemyCombatData={enemy} />
 				))}
 			</Group>
 
@@ -77,23 +77,27 @@ function Character({ position }: CharacterProps) {
 }
 
 type EnemyProps = {
-	enemyData: EnemyCombat
+	enemyCombatData: EnemyCombat
 }
 
-function Enemy({ enemyData }: EnemyProps) {
-	const { maxHealth } = enemiesData[enemyData.name]
+function Enemy({ enemyCombatData }: EnemyProps) {
+	const { name: name, maxHealth } = getEnemyData(enemyCombatData.name)
 
 	return (
 		<Stack>
 			<Image
-				src={`/enemies/${enemyData.name}.webp`}
+				src={`/enemies/${name}.webp`}
 				h={200}
 				w={200}
 				style={{
 					transform: 'scaleX(-1)'
 				}}
 			/>
-			<HealthBar currentHealth={enemyData.currentHealth} maxHealth={maxHealth} shield={enemyData.shield} />
+			<HealthBar
+				currentHealth={enemyCombatData.currentHealth}
+				maxHealth={maxHealth}
+				shield={enemyCombatData.shield}
+			/>
 		</Stack>
 	)
 }

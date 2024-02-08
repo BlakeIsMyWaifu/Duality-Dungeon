@@ -1,5 +1,4 @@
-import { type EnemyData, type EnemyName } from '~/data/enemies'
-import enemiesData from '~/data/enemies'
+import { type EnemyData, type EnemyName, getEnemyData } from '~/data/enemies'
 import { type CombatStore, type EnemyCombat } from '~/state/combatStore'
 import { createActionName, type Slice } from '~/state/stateHelpers'
 import { type Lane } from '~/types/Combat'
@@ -17,7 +16,7 @@ const actionName = createActionName<keyof EnemyActions>('combat')
 
 export const enemyActions: Slice<CombatStore, EnemyActions> = (set, get) => ({
 	addEnemy: (lane, enemyName) => {
-		const enemyData = enemiesData[enemyName]
+		const enemyData = getEnemyData(enemyName)
 		set(
 			state => ({
 				enemies: {
@@ -29,7 +28,7 @@ export const enemyActions: Slice<CombatStore, EnemyActions> = (set, get) => ({
 							currentHealth: enemyData.maxHealth,
 							shield: enemyData.startingShield,
 							status: enemyData.startingStatus,
-							moves: generateMovePool(enemyData, true)
+							moves: generateMovePool(enemyData.actions, true)
 						} satisfies EnemyCombat
 					]
 				}
@@ -75,8 +74,8 @@ export const enemyActions: Slice<CombatStore, EnemyActions> = (set, get) => ({
 
 	addEnemyMoves: (lane, index, isSpawning = false) => {
 		const enemyName = get().enemies[lane][index].name
-		const enemyData = enemiesData[enemyName]
-		const movePool = generateMovePool(enemyData, isSpawning)
+		const enemyData = getEnemyData(enemyName)
+		const movePool = generateMovePool(enemyData.actions, isSpawning)
 
 		get().updateEnemy(lane, index, { moves: movePool })
 
@@ -86,7 +85,7 @@ export const enemyActions: Slice<CombatStore, EnemyActions> = (set, get) => ({
 	enemyUseMove: (lane, index) => {
 		const enemyCombatData = get().enemies[lane][index]
 		const [nextMove, ...otherMoves] = enemyCombatData.moves
-		const enemyData = enemiesData[enemyCombatData.name]
+		const enemyData = getEnemyData(enemyCombatData.name)
 		enemyData.actions.movePool[nextMove].effect(lane, index)
 
 		if (otherMoves.length) {
@@ -99,17 +98,17 @@ export const enemyActions: Slice<CombatStore, EnemyActions> = (set, get) => ({
 	}
 })
 
-function generateMovePool(enemyData: EnemyData, isSpawning = false) {
-	if (enemyData.actions.pattern.order?.moveOrder && (isSpawning || enemyData.actions.pattern.order.repeatingOrder)) {
-		return enemyData.actions.pattern.order.moveOrder
+function generateMovePool(actions: EnemyData['actions'], isSpawning = false) {
+	if (actions.pattern.order?.moveOrder && (isSpawning || actions.pattern.order.repeatingOrder)) {
+		return actions.pattern.order.moveOrder
 	}
 
-	const moves = enemyData.actions.pattern.randomPool
-		? enemyData.actions.pattern.randomPool.map<[name: string, weight: number]>(moveName => [
+	const moves = actions.pattern.randomPool
+		? actions.pattern.randomPool.map<[name: string, weight: number]>(moveName => [
 				moveName,
-				enemyData.actions.movePool[moveName].weight
+				actions.movePool[moveName].weight
 			])
-		: Object.values(enemyData.actions.movePool).map<[name: string, weight: number]>(moveData => [
+		: Object.values(actions.movePool).map<[name: string, weight: number]>(moveData => [
 				moveData.name,
 				moveData.weight
 			])

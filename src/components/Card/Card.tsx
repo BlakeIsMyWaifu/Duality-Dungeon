@@ -1,7 +1,7 @@
 import { Box, Image, Text } from '@mantine/core'
 import { forwardRef, useMemo } from 'react'
 
-import cardsData, { type CardName } from '~/data/cards'
+import { type CardName, getCardData } from '~/data/cards'
 
 import classes from './card.module.css'
 
@@ -10,7 +10,7 @@ export type CardProps = {
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(function Card({ cardName, ...props }, ref) {
-	const cardData = useMemo(() => cardsData[cardName], [cardName])
+	const cardData = useMemo(() => getCardData(cardName), [cardName])
 
 	return (
 		<Box className={classes.container} ref={ref} {...props}>

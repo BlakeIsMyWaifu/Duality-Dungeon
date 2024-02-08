@@ -3,9 +3,7 @@ import { damageCharacter } from '~/utils/combatHelpers/damageCharacter'
 import { shieldEnemy } from '~/utils/combatHelpers/shield'
 
 export type EnemyData = {
-	name: string
-	/** Must match the key */
-	displayName: string
+	name: EnemyName
 	maxHealth: number
 	startingShield: number
 	startingStatus: Record<string, number>
@@ -34,16 +32,11 @@ type MoveData = {
 	effect: (lane: Lane, index: number) => void
 }
 
-export type EnemyName = keyof typeof enemiesData
+export type EnemyName = 'Pew Pew Person' | 'Jedguin'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const MISSING_EFFECT = (enemyName: EnemyName, move: string) => () =>
-	console.log(`${enemyName}-${move} has a missing effect`)
-
-const enemiesData: Record<string, EnemyData> = {
-	pewPewPerson: {
-		name: 'pewPewPerson',
-		displayName: 'Pew Pew Person',
+const enemies = new Map<EnemyName, EnemyData>()
+	.set('Pew Pew Person', {
+		name: 'Pew Pew Person',
 		maxHealth: 50,
 		startingShield: 0,
 		startingStatus: {},
@@ -69,10 +62,9 @@ const enemiesData: Record<string, EnemyData> = {
 				}
 			}
 		}
-	},
-	jedguin: {
-		name: 'jedguin',
-		displayName: 'Jedguin',
+	})
+	.set('Jedguin', {
+		name: 'Jedguin',
 		maxHealth: 60,
 		startingShield: 5,
 		startingStatus: {},
@@ -93,7 +85,9 @@ const enemiesData: Record<string, EnemyData> = {
 				}
 			}
 		}
-	}
-}
+	})
 
-export default enemiesData
+export function getEnemyData(enemyName: EnemyName) {
+	if (!enemies.has(enemyName)) throw new Error(`Missing enemy: ${enemyName}`)
+	return enemies.get(enemyName)!
+}

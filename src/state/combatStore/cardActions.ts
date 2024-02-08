@@ -1,4 +1,4 @@
-import cardsData from '~/data/cards'
+import { getCardData } from '~/data/cards'
 import { type CombatStore } from '~/state/combatStore'
 import { createActionName, type Slice } from '~/state/stateHelpers'
 
@@ -88,7 +88,7 @@ export const cardActions: Slice<CombatStore, CardActions> = (set, get) => ({
 	activateCard: handId => {
 		const { hand } = get().cards
 		const cardName = hand[handId]
-		const card = cardsData[cardName]
+		const card = getCardData(cardName)
 
 		const staminaCost = card.stamina
 		const currentStamina = get().stamina

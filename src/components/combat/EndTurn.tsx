@@ -1,7 +1,7 @@
 import { Button } from '@mantine/core'
 import { useMemo } from 'react'
 
-import cardsData from '~/data/cards'
+import { getCardData } from '~/data/cards'
 import { useCombatStore } from '~/state/combatStore'
 
 export default function EndTurn() {
@@ -12,7 +12,7 @@ export default function EndTurn() {
 
 	const canPlayCards = useMemo(() => {
 		if (!hand.length) return false
-		const staminaCosts = hand.map(cardName => cardsData[cardName].stamina)
+		const staminaCosts = hand.map(cardName => getCardData(cardName).stamina)
 		const cheapestCost = Math.min(...staminaCosts)
 		return cheapestCost <= stamina
 	}, [hand, stamina])

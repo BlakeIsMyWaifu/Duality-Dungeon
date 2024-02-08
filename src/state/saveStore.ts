@@ -48,7 +48,7 @@ const saveState: SaveState = {
 	active: false,
 	gameStatus: 'map',
 	maxStamina: 5,
-	deck: ['slash', 'slash', 'slash', 'slash', 'slash', 'block', 'block', 'block', 'block', 'block'],
+	deck: ['Slash', 'Slash', 'Slash', 'Slash', 'Slash', 'Block', 'Block', 'Block', 'Block', 'Block'],
 	characters: {
 		top: {
 			characterInfo: {
