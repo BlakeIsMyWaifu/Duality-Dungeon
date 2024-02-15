@@ -4,6 +4,7 @@ import { shieldEnemy } from '~/utils/combatHelpers/shield'
 
 export type EnemyData = {
 	name: EnemyName
+	image: string
 	maxHealth: number
 	startingShield: number
 	startingStatus: Record<string, number>
@@ -27,16 +28,20 @@ type MoveData = {
 	/** Must match the key */
 	displayName: string
 	weight: number
+	icon: Icon
 	/** Should the move be visually shown to the player */
 	hidden?: boolean
 	effect: (lane: Lane, index: number) => void
 }
+
+type Icon = 'attack' | 'block' | 'blank'
 
 export type EnemyName = 'Pew Pew Person' | 'Jedguin'
 
 const enemies = new Map<EnemyName, EnemyData>()
 	.set('Pew Pew Person', {
 		name: 'Pew Pew Person',
+		image: 'pewPewPerson',
 		maxHealth: 50,
 		startingShield: 0,
 		startingStatus: {},
@@ -52,12 +57,14 @@ const enemies = new Map<EnemyName, EnemyData>()
 					name: 'shoot',
 					displayName: 'Shoot',
 					weight: 1,
+					icon: 'attack',
 					effect: lane => damageCharacter(lane, 4)
 				},
 				reload: {
 					name: 'reload',
 					displayName: 'Reload',
 					weight: 1,
+					icon: 'blank',
 					effect: () => undefined
 				}
 			}
@@ -65,6 +72,7 @@ const enemies = new Map<EnemyName, EnemyData>()
 	})
 	.set('Jedguin', {
 		name: 'Jedguin',
+		image: 'jedguin',
 		maxHealth: 60,
 		startingShield: 5,
 		startingStatus: {},
@@ -75,12 +83,14 @@ const enemies = new Map<EnemyName, EnemyData>()
 					name: 'vroom',
 					displayName: 'VROOM',
 					weight: 2,
+					icon: 'attack',
 					effect: lane => damageCharacter(lane, 2)
 				},
 				block: {
 					name: 'block',
 					displayName: 'Block',
 					weight: 1,
+					icon: 'block',
 					effect: (lane, index) => shieldEnemy(lane, index, 3)
 				}
 			}

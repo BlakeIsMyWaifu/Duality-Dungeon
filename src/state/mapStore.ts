@@ -61,8 +61,8 @@ const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 				type: 'combat',
 				data: {
 					enemies: {
-						top: ['pewPewPerson', 'jedguin'],
-						bottom: ['jedguin', 'pewPewPerson', 'pewPewPerson']
+						top: ['Pew Pew Person', 'Jedguin'],
+						bottom: ['Jedguin', 'Pew Pew Person', 'Pew Pew Person']
 					}
 				}
 			}

@@ -8,7 +8,7 @@ type HealthBarProps = {
 
 export default function HealthBar({ currentHealth, maxHealth, shield }: HealthBarProps) {
 	return (
-		<Progress.Root size='xl' transitionDuration={200}>
+		<Progress.Root size='xl' transitionDuration={200} style={{ width: '100%' }}>
 			<Progress.Section value={(currentHealth / maxHealth) * 100} color='red'>
 				<Progress.Label>
 					{currentHealth >= 15 ? `${currentHealth} / ${maxHealth}` : currentHealth}

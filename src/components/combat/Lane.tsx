@@ -6,6 +6,7 @@ import { type EnemyCombat, useCombatStore } from '~/state/combatStore'
 import { useSaveStore } from '~/state/saveStore'
 import { type Lane } from '~/types/Combat'
 
+import OutlineText from '../OutlineText'
 import HealthBar from './HealthBar'
 
 type LaneProps = {
@@ -81,12 +82,20 @@ type EnemyProps = {
 }
 
 function Enemy({ enemyCombatData }: EnemyProps) {
-	const { name: name, maxHealth } = getEnemyData(enemyCombatData.name)
+	const {
+		image,
+		maxHealth,
+		actions: { movePool }
+	} = getEnemyData(enemyCombatData.name)
+	const nextMoveName = enemyCombatData.moves[0]
+	const { icon: nextMoveIcon, displayName: nextMoveDisplayName } = movePool[nextMoveName]
 
 	return (
-		<Stack>
+		<Stack align='center'>
+			<Image src={`/icons/${nextMoveIcon}.webp`} h={48} w={48} />
+			<OutlineText fw={700}>{nextMoveDisplayName}</OutlineText>
 			<Image
-				src={`/enemies/${name}.webp`}
+				src={`/enemies/${image}.webp`}
 				h={200}
 				w={200}
 				style={{

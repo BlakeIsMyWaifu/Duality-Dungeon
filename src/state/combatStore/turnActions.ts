@@ -60,7 +60,6 @@ export const turnActions: Slice<CombatStore, TurnActions> = (set, get) => ({
 		get().drawCard(5)
 	},
 
-	// prettier-ignore
 	enemyTurn: () => {
 		get().enemies.top.forEach((_, i) => get().enemyUseMove('top', i))
 		get().enemies.bottom.forEach((_, i) => get().enemyUseMove('bottom', i))
