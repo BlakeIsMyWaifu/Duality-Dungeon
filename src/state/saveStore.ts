@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 import { type CardName } from '~/data/cards'
+import { Router } from '~/pages/router'
 import { type Lane } from '~/types/Combat'
 import { type MapNode } from '~/types/Map'
 
@@ -101,6 +102,8 @@ const saveActions: Slice<SaveStore, SaveActions> = (set, _get) => ({
 		)
 
 		useMapStore.getState().generateNodes()
+
+		Router.push('Map')
 	},
 
 	updateCharacterHealth: (lane, amount) => {

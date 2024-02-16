@@ -16,12 +16,13 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@mantine/core": "^7.5.0",
     "@mantine/hooks": "^7.5.0",
+    "@swan-io/chicane": "^1.4.1",
     "@tabler/icons-react": "^2.46.0",
     "@tauri-apps/api": "^1.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-drawline": "^1.1.0",
-    "react-router-dom": "^6.21.3",
+    "ts-pattern": "^5.0.8",
     "zustand": "^4.5.0"
   },
   "devDependencies": {

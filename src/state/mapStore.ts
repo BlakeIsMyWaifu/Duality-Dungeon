@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
+import { Router } from '~/pages/router'
 import { type CombatNode, type MapNode, type NodeStatus } from '~/types/Map'
 
 import { useCombatStore } from './combatStore'
@@ -10,7 +11,7 @@ type MapState = {
 	act: number
 	currentNode: [nodeTier: number, nodeId: number] | null
 	lastCompletedNode: [nodeTier: number, nodeId: number] | null
-	/** Fist key is the tier, the value key is the node id */
+	/** First key is the tier, the value key is the node id */
 	nodes: Record<number, Record<number, MapNode>>
 }
 
@@ -18,7 +19,7 @@ const mapState: MapState = {
 	act: 1,
 	currentNode: null,
 	lastCompletedNode: null,
-	nodes: []
+	nodes: {}
 }
 
 type MapActions = {
@@ -139,6 +140,8 @@ const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 				get().changeNodeStatus(+tier, id, 'available')
 			})
 		})
+
+		Router.push('Map')
 	},
 
 	changeNodeStatus: (nodeTier, nodeId, status) => {

@@ -50,6 +50,10 @@ export const enemyActions: Slice<CombatStore, EnemyActions> = (set, get) => ({
 			}),
 			...actionName('removeEnemy')
 		)
+
+		if (!get().enemies.top.length && !get().enemies.bottom.length) {
+			get().endCombat()
+		}
 	},
 
 	updateEnemy: (lane, index, data) => {

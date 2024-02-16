@@ -1,11 +1,15 @@
+import { Router } from '~/pages/router'
 import { combatState, type CombatStore } from '~/state/combatStore'
 import { useSaveStore } from '~/state/saveStore'
 import { createActionName, type Slice } from '~/state/stateHelpers'
 import { type CombatNode } from '~/types/Map'
 
+import { useMapStore } from '../mapStore'
+
 export type TurnActions = {
 	/** Should only be called from useMapStore.openNode */
 	initCombat: (combatNode: CombatNode) => void
+	endCombat: () => void
 	endTurn: () => void
 	startTurn: () => void
 	enemyTurn: () => void
@@ -37,6 +41,12 @@ export const turnActions: Slice<CombatStore, TurnActions> = (set, get) => ({
 		})
 
 		get().drawCard(5)
+
+		Router.push('Combat')
+	},
+
+	endCombat: () => {
+		useMapStore.getState().completeNode()
 	},
 
 	endTurn: () => {
