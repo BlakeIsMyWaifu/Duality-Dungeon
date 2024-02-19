@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
-import { Router } from '~/pages/router'
 import { type CombatNode, type MapNode, type NodeStatus } from '~/types/Map'
 
 import { useCombatStore } from './combatStore'
+import { useSaveStore } from './saveStore'
 import { createActionName, type Slice } from './stateHelpers'
 
 type MapState = {
@@ -141,7 +141,7 @@ const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 			})
 		})
 
-		Router.push('Map')
+		useSaveStore.getState().changeGameStatus('map')
 	},
 
 	changeNodeStatus: (nodeTier, nodeId, status) => {

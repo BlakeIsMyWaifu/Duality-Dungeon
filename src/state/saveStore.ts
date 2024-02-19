@@ -4,14 +4,13 @@ import { devtools, persist } from 'zustand/middleware'
 import { type CardName } from '~/data/cards'
 import { Router } from '~/pages/router'
 import { type Lane } from '~/types/Combat'
-import { type MapNode } from '~/types/Map'
 
 import { useMapStore } from './mapStore'
 import { createActionName, type Slice } from './stateHelpers'
 
 type SaveState = {
-	active: boolean
-	gameStatus: 'map' | MapNode['type']
+	isActive: boolean
+	gameStatus: GameStatus
 	maxStamina: number
 	deck: CardName[]
 	characters: {
@@ -19,6 +18,8 @@ type SaveState = {
 		bottom: CharacterState
 	}
 }
+
+export type GameStatus = Exclude<Parameters<(typeof Router)['useRoute']>[0][number], 'home'>
 
 type CharacterState = {
 	readonly characterInfo: RaphaelInfo | AzraelInfo
@@ -46,7 +47,7 @@ interface Mood extends NumberStat {
 }
 
 const saveState: SaveState = {
-	active: false,
+	isActive: false,
 	gameStatus: 'map',
 	maxStamina: 5,
 	deck: ['Slash', 'Slash', 'Slash', 'Slash', 'Slash', 'Block', 'Block', 'Block', 'Block', 'Block'],
@@ -86,24 +87,31 @@ const saveState: SaveState = {
 
 type SaveActions = {
 	newGame: () => void
+	changeGameStatus: (gameStatus: GameStatus) => void
 	updateCharacterHealth: (lane: Lane, amount: number) => void
 }
 
 const actionName = createActionName<keyof SaveActions>('save')
 
-const saveActions: Slice<SaveStore, SaveActions> = (set, _get) => ({
+const saveActions: Slice<SaveStore, SaveActions> = (set, get) => ({
 	newGame: () => {
 		set(
 			{
 				...saveState,
-				active: true
+				isActive: true
 			},
 			...actionName('newGame')
 		)
 
 		useMapStore.getState().generateNodes()
 
-		Router.push('Map')
+		get().changeGameStatus('map')
+	},
+
+	changeGameStatus: gameStatus => {
+		Router.push(gameStatus)
+
+		set({ gameStatus }, ...actionName('changeGameStatus'))
 	},
 
 	updateCharacterHealth: (lane, amount) => {

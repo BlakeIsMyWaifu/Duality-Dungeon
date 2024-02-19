@@ -1,4 +1,3 @@
-import { Router } from '~/pages/router'
 import { combatState, type CombatStore } from '~/state/combatStore'
 import { useSaveStore } from '~/state/saveStore'
 import { createActionName, type Slice } from '~/state/stateHelpers'
@@ -42,7 +41,7 @@ export const turnActions: Slice<CombatStore, TurnActions> = (set, get) => ({
 
 		get().drawCard(5)
 
-		Router.push('Combat')
+		useSaveStore.getState().changeGameStatus('combat')
 	},
 
 	endCombat: () => {

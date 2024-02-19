@@ -1,4 +1,5 @@
 import { type EnemyName } from '~/data/enemies'
+import { type GameStatus } from '~/state/saveStore'
 
 type MapNodeBase = {
 	id: number
@@ -6,7 +7,7 @@ type MapNodeBase = {
 	/** Key is the tier and the value is an array of ids */
 	childrenId: Record<number, number[]>
 	status: NodeStatus
-	type: MapNode['type']
+	type: GameStatus
 	data: unknown
 }
 
