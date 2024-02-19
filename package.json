@@ -8,7 +8,8 @@
     "build": "tauri build",
     "preview": "vite preview",
     "lint": "eslint src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "icons": "tauri icon ./public/app-icon.png"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
