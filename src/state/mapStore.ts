@@ -1,14 +1,16 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
+import { type Encounter, getEncounterData } from '~/data/encounters'
 import { type CombatNode, type MapNode, type NodeStatus } from '~/types/Map'
+import { weightedRandom } from '~/utils/weightedRandom'
 
 import { useCombatStore } from './combatStore'
 import { useSaveStore } from './saveStore'
 import { createActionName, type Slice } from './stateHelpers'
 
 type MapState = {
-	act: number
+	act: 1 | 2 | 3
 	currentNode: [nodeTier: number, nodeId: number] | null
 	lastCompletedNode: [nodeTier: number, nodeId: number] | null
 	/** First key is the tier, the value key is the node id */
@@ -53,7 +55,14 @@ const actionName = createActionName<keyof MapActions>('map')
 
 const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 	generateNodes: () => {
+		const { act } = get()
+		// TODO generate boss nodes at the end of an act
+		const encounters = getEncounterData(act, 'monster')
+		const weightedEncounters = encounters.map<[Encounter, number]>(encounter => [encounter, encounter.weight])
+
 		const combatNode = (id: number, tier: number, childrenId: Record<number, number[]>) => {
+			const { top, bottom } = weightedRandom(weightedEncounters)
+
 			const out: CombatNode = {
 				id,
 				tier,
@@ -62,8 +71,8 @@ const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 				type: 'combat',
 				data: {
 					enemies: {
-						top: ['Pew Pew Person', 'Jedguin'],
-						bottom: ['Jedguin', 'Pew Pew Person', 'Pew Pew Person']
+						top,
+						bottom
 					}
 				}
 			}
