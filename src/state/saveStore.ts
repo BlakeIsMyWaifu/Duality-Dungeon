@@ -11,6 +11,7 @@ import { createActionName, type Slice } from './stateHelpers'
 type SaveState = {
 	isActive: boolean
 	gameStatus: GameStatus
+	act: 1 | 2 | 3
 	maxStamina: number
 	deck: CardName[]
 	characters: {
@@ -49,6 +50,7 @@ interface Mood extends NumberStat {
 const saveState: SaveState = {
 	isActive: false,
 	gameStatus: 'map',
+	act: 1,
 	maxStamina: 5,
 	deck: ['Slash', 'Slash', 'Slash', 'Slash', 'Slash', 'Block', 'Block', 'Block', 'Block', 'Block'],
 	characters: {
@@ -89,6 +91,7 @@ type SaveActions = {
 	newGame: () => void
 	changeGameStatus: (gameStatus: GameStatus) => void
 	updateCharacterHealth: (lane: Lane, amount: number) => void
+	completeAct: () => void
 }
 
 const actionName = createActionName<keyof SaveActions>('save')
@@ -130,6 +133,19 @@ const saveActions: Slice<SaveStore, SaveActions> = (set, get) => ({
 			}),
 			...actionName('updateCharacterHealth')
 		)
+	},
+
+	completeAct: () => {
+		const { act: currentAct } = useSaveStore.getState()
+
+		if (currentAct === 1 || currentAct === 2) {
+			set({ act: (currentAct + 1) as 2 | 3 }, ...actionName('completeAct'))
+			useMapStore.getState().generateNodes()
+		}
+
+		if (currentAct === 3) {
+			Router.push('home')
+		}
 	}
 })
 

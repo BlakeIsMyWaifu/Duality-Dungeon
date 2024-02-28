@@ -1,8 +1,8 @@
 import { type Lane } from '~/types/Combat'
 
-import { actOneEnemies, type ActOneEnemyName } from './acts/actOne'
-import { actThreeEnemies, type ActThreeEnemyName } from './acts/actThree'
-import { actTwoEnemies, type ActTwoEnemyName } from './acts/actTwo'
+import { actOneEnemies, type ActOneEnemyName } from './enemies/actOne'
+import { actThreeEnemies, type ActThreeEnemyName } from './enemies/actThree'
+import { actTwoEnemies, type ActTwoEnemyName } from './enemies/actTwo'
 
 export type EnemyData = {
 	name: EnemyName

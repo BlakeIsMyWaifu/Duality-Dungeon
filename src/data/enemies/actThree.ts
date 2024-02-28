@@ -1,4 +1,3 @@
-import { type Encounter } from '~/data/encounters'
 import { MISSING_ENEMY_EFFECT } from '~/utils/combatHelpers/_dev'
 
 import { type EnemyData } from '../enemies'
@@ -64,7 +63,3 @@ export const actThreeEnemies: Record<ActThreeEnemyName, EnemyData> = {
 		}
 	}
 }
-
-export const actThreeEncounterMonster: Encounter<ActThreeEnemyName>[] = []
-
-export const actThreeEncounterBoss: Encounter<ActThreeEnemyName>[] = []

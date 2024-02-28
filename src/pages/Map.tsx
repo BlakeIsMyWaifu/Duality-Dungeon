@@ -1,9 +1,10 @@
-import { Box, Button, Group, Stack, Title } from '@mantine/core'
+import { Box, Group, Stack, Title } from '@mantine/core'
 import { Fragment, type MutableRefObject, useRef, useState } from 'react'
 import { StraightLine } from 'react-drawline'
 
 import useMountEffect from '~/hooks/useMountEffect'
 import { useMapStore } from '~/state/mapStore'
+import { useSaveStore } from '~/state/saveStore'
 import { type MapNode, type NodeStatus } from '~/types/Map'
 
 const lineColours: Record<NodeStatus, string> = {
@@ -14,10 +15,8 @@ const lineColours: Record<NodeStatus, string> = {
 }
 
 export default function Map() {
-	const act = useMapStore(state => state.act)
+	const act = useSaveStore(state => state.act)
 	const nodes = useMapStore(state => state.nodes)
-
-	const completeNode = useMapStore(state => state.completeNode)
 
 	const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -36,7 +35,6 @@ export default function Map() {
 					</Stack>
 				))}
 			</Group>
-			<Button onClick={completeNode}>Complete Node</Button>
 		</Stack>
 	)
 }

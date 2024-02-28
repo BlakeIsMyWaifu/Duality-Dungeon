@@ -10,7 +10,6 @@ import { useSaveStore } from './saveStore'
 import { createActionName, type Slice } from './stateHelpers'
 
 type MapState = {
-	act: 1 | 2 | 3
 	currentNode: [nodeTier: number, nodeId: number] | null
 	lastCompletedNode: [nodeTier: number, nodeId: number] | null
 	/** First key is the tier, the value key is the node id */
@@ -18,7 +17,6 @@ type MapState = {
 }
 
 const mapState: MapState = {
-	act: 1,
 	currentNode: null,
 	lastCompletedNode: null,
 	nodes: {}
@@ -55,13 +53,23 @@ const actionName = createActionName<keyof MapActions>('map')
 
 const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 	generateNodes: () => {
-		const { act } = get()
-		// TODO generate boss nodes at the end of an act
-		const encounters = getEncounterData(act, 'monster')
-		const weightedEncounters = encounters.map<[Encounter, number]>(encounter => [encounter, encounter.weight])
+		const { act } = useSaveStore.getState()
+
+		const monsterEncounters = getEncounterData(act, 'monster')
+		const weightedMonsterEncounters = monsterEncounters.map<[Encounter, number]>(encounter => [
+			encounter,
+			encounter.weight
+		])
+
+		const bossEncounters = getEncounterData(act, 'boss')
+		const weightedBossEncounters = bossEncounters.map<[Encounter, number]>(encounter => [
+			encounter,
+			encounter.weight
+		])
+		const bossEncounter = weightedRandom(weightedBossEncounters)
 
 		const combatNode = (id: number, tier: number, childrenId: Record<number, number[]>) => {
-			const { top, bottom } = weightedRandom(weightedEncounters)
+			const { top, bottom } = tier === 3 ? bossEncounter : weightedRandom(weightedMonsterEncounters)
 
 			const out: CombatNode = {
 				id,
@@ -92,9 +100,12 @@ const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 						4: combatNode(4, 1, { 2: [6, 7] })
 					},
 					2: {
-						5: combatNode(5, 2, []),
-						6: combatNode(6, 2, []),
-						7: combatNode(7, 2, [])
+						5: combatNode(5, 2, { 3: [8] }),
+						6: combatNode(6, 2, { 3: [8] }),
+						7: combatNode(7, 2, { 3: [8] })
+					},
+					3: {
+						8: combatNode(8, 3, {})
 					}
 				}
 			},
@@ -134,6 +145,10 @@ const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 		const node = get().nodes[nodeTier]?.[nodeId]
 		if (!node) return
 
+		useSaveStore.getState().changeGameStatus('map')
+
+		if (nodeTier === 3) return useSaveStore.getState().completeAct()
+
 		get().changeNodeStatus(nodeTier, nodeId, 'completed')
 
 		set(
@@ -149,8 +164,6 @@ const mapActions: Slice<MapStore, MapActions> = (set, get) => ({
 				get().changeNodeStatus(+tier, id, 'available')
 			})
 		})
-
-		useSaveStore.getState().changeGameStatus('map')
 	},
 
 	changeNodeStatus: (nodeTier, nodeId, status) => {
