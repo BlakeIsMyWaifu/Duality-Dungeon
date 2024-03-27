@@ -94,8 +94,8 @@ export const cardActions: Slice<CombatStore, CardActions> = (set, get) => ({
 		const currentStamina = get().stamina
 		if (currentStamina < staminaCost) return
 
-		card.top.effect()
-		card.bottom.effect()
+		card.top.effect('top')
+		card.bottom.effect('bottom')
 
 		get().discardCard(handId)
 		get().consumeStamina(staminaCost)

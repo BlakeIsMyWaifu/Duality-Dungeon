@@ -3,7 +3,7 @@ import { devtools, persist } from 'zustand/middleware'
 
 import { type Encounter, getEncounterData } from '~/data/encounters'
 import { type CombatNode, type MapNode, type NodeStatus } from '~/types/Map'
-import { weightedRandom } from '~/utils/weightedRandom'
+import { weightedRandom } from '~/utils/random'
 
 import { useCombatStore } from './combatStore'
 import { useSaveStore } from './saveStore'

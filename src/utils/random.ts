@@ -1,3 +1,13 @@
+export function randomValue<T>(array: T[]) {
+	const [first] = randomValues(array, 1)
+	return first
+}
+
+export function randomValues<T>(array: T[], amount: number) {
+	const shuffled = Array.from(array).sort(() => 0.5 - Math.random())
+	return shuffled.slice(0, amount)
+}
+
 export function weightedRandom<T>(data: [value: T, weight: number][]) {
 	if (!data.length) return null as T
 

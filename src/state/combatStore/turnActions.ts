@@ -1,7 +1,9 @@
+import { tierOneCards } from '~/data/cards/tierOne'
 import { combatState, type CombatStore } from '~/state/combatStore'
 import { useSaveStore } from '~/state/saveStore'
 import { createActionName, type Slice } from '~/state/stateHelpers'
 import { type CombatNode } from '~/types/Map'
+import { randomValue } from '~/utils/random'
 
 import { useMapStore } from '../mapStore'
 
@@ -45,6 +47,9 @@ export const turnActions: Slice<CombatStore, TurnActions> = (set, get) => ({
 	},
 
 	endCombat: () => {
+		const randomTierOneCard = randomValue(tierOneCards)
+		useSaveStore.getState().addCardToDeck(randomTierOneCard.name)
+
 		useMapStore.getState().completeNode()
 	},
 

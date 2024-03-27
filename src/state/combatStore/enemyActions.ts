@@ -2,7 +2,7 @@ import { type EnemyData, type EnemyName, getEnemyData } from '~/data/enemies'
 import { type CombatStore, type EnemyCombat } from '~/state/combatStore'
 import { createActionName, type Slice } from '~/state/stateHelpers'
 import { type Lane } from '~/types/Combat'
-import { weightedRandom } from '~/utils/weightedRandom'
+import { weightedRandom } from '~/utils/random'
 
 export type EnemyActions = {
 	addEnemy: (lane: Lane, enemyName: EnemyName) => void

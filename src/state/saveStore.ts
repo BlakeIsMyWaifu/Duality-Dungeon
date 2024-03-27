@@ -92,6 +92,7 @@ type SaveActions = {
 	changeGameStatus: (gameStatus: GameStatus) => void
 	updateCharacterHealth: (lane: Lane, amount: number) => void
 	completeAct: () => void
+	addCardToDeck: (cardName: CardName) => void
 }
 
 const actionName = createActionName<keyof SaveActions>('save')
@@ -146,6 +147,15 @@ const saveActions: Slice<SaveStore, SaveActions> = (set, get) => ({
 		if (currentAct === 3) {
 			Router.push('home')
 		}
+	},
+
+	addCardToDeck: cardName => {
+		set(
+			state => ({
+				deck: [...state.deck, cardName]
+			}),
+			...actionName('addCardToDeck')
+		)
 	}
 })
 
